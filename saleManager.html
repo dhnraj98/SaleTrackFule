@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fuel Sale Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f0f2f5;
+      color: #333;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #3f51b5;
+    }
+    label {
+      margin-top: 10px;
+      font-weight: 600;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #3f51b5;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    button:hover {
+      background-color: #303f9f;
+    }
+    .fuel-inputs {
+      display: flex;
+      gap: 10px;
+    }
+    .fuel-inputs > div {
+      flex: 1;
+    }
+    .totals {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      background: #f7f9fc;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+    .table-container {
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    thead {
+      background-color: #e8eaf6;
+      position: sticky;
+      top: 0;
+    }
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    td .action-btn {
+      display: inline-block;
+      margin: 2px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    .edit-btn {
+      background-color: #2196f3;
+    }
+    .delete-btn {
+      background-color: #f44336;
+    }
+    #customerName {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Fuel Sale Tracker</h2>
+    
+    <label>Petrol Rate (Rs/L)</label>
+    <input type="number" id="petrolRate" placeholder="Enter Petrol Rate">
+
+    <label>Diesel Rate (Rs/L)</label>
+    <input type="number" id="dieselRate" placeholder="Enter Diesel Rate">
+
+    <div class="fuel-inputs">
+      <div>
+        <label>Petrol (Liters)</label>
+        <input type="number" id="petrolLiters" placeholder="Petrol liters">
+      </div>
+      <div>
+        <label>Diesel (Liters)</label>
+        <input type="number" id="dieselLiters" placeholder="Diesel liters">
+      </div>
+    </div>
+
+    <label>Payment Type</label>
+    <select id="paymentType" onchange="toggleCustomerName()">
+      <option value="Cash">Cash</option>
+      <option value="Credit">Credit</option>
+    </select>
+
+    <div id="customerNameDiv">
+      <label for="customerName">Customer Name (for Credit)</label>
+      <input type="text" id="customerName" placeholder="Enter customer name">
+    </div>
+
+    <button onclick="addTransaction()" id="submitBtn">Add Transaction</button>
+
+    <div class="totals">
+      <strong>Total Cash:</strong> Rs <span id="totalCash">0</span><br>
+      <strong>Total Credit:</strong> Rs <span id="totalCredit">0</span>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Fuel Details</th>
+            <th>Payment</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="transactionTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    let petrolRate = localStorage.getItem("petrolRate") || 0;
+    let dieselRate = localStorage.getItem("dieselRate") || 0;
+    let editingIndex = -1;
+
+    document.getElementById("petrolRate").value = petrolRate;
+    document.getElementById("dieselRate").value = dieselRate;
+
+    function toggleCustomerName() {
+      const paymentType = document.getElementById("paymentType").value;
+      const customerInput = document.getElementById("customerName");
+      customerInput.style.display = paymentType === "Credit" ? "block" : "none";
+    }
+
+    function addTransaction() {
+      petrolRate = parseFloat(document.getElementById("petrolRate").value) || 0;
+      dieselRate = parseFloat(document.getElementById("dieselRate").value) || 0;
+      localStorage.setItem("petrolRate", petrolRate);
+      localStorage.setItem("dieselRate", dieselRate);
+
+      const petrolLiters = parseFloat(document.getElementById("petrolLiters").value) || 0;
+      const dieselLiters = parseFloat(document.getElementById("dieselLiters").value) || 0;
+      const paymentType = document.getElementById("paymentType").value;
+      const customerName = document.getElementById("customerName").value.trim();
+
+      if (petrolLiters === 0 && dieselLiters === 0) {
+        alert("Please enter at least one fuel quantity.");
+        return;
+      }
+
+      if (paymentType === "Credit" && customerName === "") {
+        alert("Please enter customer name for credit.");
+        return;
+      }
+
+      const petrolAmount = petrolLiters * petrolRate;
+      const dieselAmount = dieselLiters * dieselRate;
+      const total = petrolAmount + dieselAmount;
+
+      const transaction = {
+        petrolLiters,
+        dieselLiters,
+        petrolRate,
+        dieselRate,
+        petrolAmount,
+        dieselAmount,
+        total,
+        paymentType,
+        customerName: paymentType === "Credit" ? customerName : ""
+      };
+
+      if (editingIndex > -1) {
+        transactions[editingIndex] = transaction;
+        editingIndex = -1;
+        document.getElementById("submitBtn").innerText = "Add Transaction";
+      } else {
+        transactions.push(transaction);
+      }
+
+      localStorage.setItem("transactions", JSON.stringify(transactions));
+      renderTable();
+      clearForm();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("transactionTable");
+      tbody.innerHTML = '';
+      let totalCash = 0;
+      let totalCredit = 0;
+
+      transactions.forEach((tx, index) => {
+        const details = [];
+        if (tx.petrolLiters > 0) details.push(`Petrol: ${tx.petrolLiters}L @ Rs${tx.petrolRate}`);
+        if (tx.dieselLiters > 0) details.push(`Diesel: ${tx.dieselLiters}L @ Rs${tx.dieselRate}`);
+        const detailText = details.join('<br>');
+        const payText = tx.paymentType === "Credit" ? `Credit (${tx.customerName})` : "Cash";
+
+        if (tx.paymentType === 'Cash') totalCash += tx.total;
+        else totalCredit += tx.total;
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${detailText}</td>
+            <td>${payText}</td>
+            <td>Rs ${tx.total.toFixed(2)}</td>
+            <td>
+              <span class="action-btn edit-btn" onclick="editTransaction(${index})">Edit</span>
+              <span class="action-btn delete-btn" onclick="deleteTransaction(${index})">Delete</span>
+            </td>
+          </tr>
+        `;
+      });
+
+      document.getElementById("totalCash").innerText = totalCash.toFixed(2);
+      document.getElementById("totalCredit").innerText = totalCredit.toFixed(2);
+    }
+
+    function deleteTransaction(index) {
+      transactions.splice(index, 1);
+      localStorage.setItem("transactions", JSON.stringify(transactions));
+      renderTable();
+    }
+
+    function editTransaction(index) {
+      const tx = transactions[index];
+      document.getElementById("petrolLiters").value = tx.petrolLiters;
+      document.getElementById("dieselLiters").value = tx.dieselLiters;
+      document.getElementById("paymentType").value = tx.paymentType;
+      toggleCustomerName();
+      document.getElementById("customerName").value = tx.customerName || "";
+      editingIndex = index;
+      document.getElementById("submitBtn").innerText = "Update Transaction";
+    }
+
+    function clearForm() {
+      document.getElementById("petrolLiters").value = '';
+      document.getElementById("dieselLiters").value = '';
+      document.getElementById("paymentType").value = 'Cash';
+      document.getElementById("customerName").value = '';
+      toggleCustomerName();
+    }
+
+    toggleCustomerName();
+    renderTable();
+  </script>
+</body>
+</html>

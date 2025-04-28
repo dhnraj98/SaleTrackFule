@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sale Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="container" id="sale-calculator">
+    <h3 id="updated-rate-display">Sale Calculator</h3>
+    
+    <h4>Diesel Machine A</h4>
+    <input type="number" id="diesel-a-old" placeholder="Old Reading (A) in Liters" step="any" />
+    <input type="number" id="diesel-a-new" placeholder="New Reading (A) in Liters" step="any" />
+
+    <h4>Diesel Machine B</h4>
+    <input type="number" id="diesel-b-old" placeholder="Old Reading (B) in Liters" step="any" />
+    <input type="number" id="diesel-b-new" placeholder="New Reading (B) in Liters" step="any" />
+
+    <h4>Petrol Machine A</h4>
+    <input type="number" id="petrol-a-old" placeholder="Old Reading (A) in Liters" step="any" />
+    <input type="number" id="petrol-a-new" placeholder="New Reading (A) in Liters" step="any" />
+
+    <h4>Petrol Machine B</h4>
+    <input type="number" id="petrol-b-old" placeholder="Old Reading (B) in Liters" step="any" />
+    <input type="number" id="petrol-b-new" placeholder="New Reading (B) in Liters" step="any" />
+
+    <h4>Set Diesel Rate (₹/Liter)</h4>
+    <input type="number" id="diesel-rate" placeholder="Enter Diesel Rate" step="any" />
+
+    <h4>Set Petrol Rate (₹/Liter)</h4>
+    <input type="number" id="petrol-rate" placeholder="Enter Petrol Rate" step="any" />
+
+    <button onclick="updateRates()">Update Rate</button>
+    <button onclick="calculateSales()">Calculate Sales</button>
+
+    <div class="result" id="sales-result" style="display:none;">
+      <h4>Sales Summary</h4>
+      <div id="machine-results"></div>
+      <p id="total-sales"></p>
+    </div>
+    
+      <div class="nxt-section">
+<button id="nxt-button">
+    <a href="saleManager.html">
+      Sale Manager
+    </a>
+    </button>
+
+  </div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
