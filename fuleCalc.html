@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Fuel Rates</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            margin: 0;
+            padding: 50px 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h3 {
+            color: #d9534f;
+            margin-bottom: 10px;
+        }
+        .rate-container, .calculate-container {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .rate-container {
+            background: linear-gradient(135deg, #6dd5ed, #2193b0);
+            color: white;
+        }
+        .calculate-container {
+            background: linear-gradient(135deg, #f7971e, #ffd200);
+            color: white;
+        }
+        input {
+            width: 80%;
+            padding: 8px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px;
+            width: 100%;
+            border: none;
+            background: #ff416c;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff4b2b;
+        }
+        .total-amount {
+            font-size: 22px;
+            font-weight: bold;
+            background: white;
+            color: #ff416c;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="rate-container">
+            <h3>⛽ Fuel Rates</h3>
+            <p>Diesel Rate: ₹<span id="dieselRate">147.50</span>/L</p>
+            <p>Petrol Rate: ₹<span id="petrolRate">161.50</span>/L</p>
+
+            <h4>Update Rates</h4>
+            <input type="number" id="dieselInput" placeholder="New Diesel Rate">
+            <input type="number" id="petrolInput" placeholder="New Petrol Rate">
+            <button onclick="updateRates()">Update</button>
+        </div>
+
+        <div class="calculate-container">
+            <h3>🛢️ Calculate Fuel Cost</h3>
+            <input type="number" id="dieselLtr" placeholder="Diesel (Ltr)" oninput="calculateAmount()">
+            <input type="number" id="petrolLtr" placeholder="Petrol (Ltr)" oninput="calculateAmount()">
+            <h4>Total Diesel Cost: ₹<span id="dieselAmount">0.00</span></h4>
+            <h4>Total Petrol Cost: ₹<span id="petrolAmount">0.00</span></h4>
+            <h3 class="total-amount">💰 Total Amount: ₹<span id="totalAmount">0.00</span></h3>
+        </div>
+    </div>
+
+    <script>
+        function updateRates() {
+            let dieselValue = document.getElementById('dieselInput').value;
+            let petrolValue = document.getElementById('petrolInput').value;
+
+            if (dieselValue) {
+                document.getElementById('dieselRate').innerText = dieselValue;
+            }
+            if (petrolValue) {
+                document.getElementById('petrolRate').innerText = petrolValue;
+            }
+            calculateAmount(); // Update calculation after rate change
+        }
+
+        function calculateAmount() {
+            let dieselRate = parseFloat(document.getElementById('dieselRate').innerText);
+            let petrolRate = parseFloat(document.getElementById('petrolRate').innerText);
+            let dieselLtr = parseFloat(document.getElementById('dieselLtr').value) || 0;
+            let petrolLtr = parseFloat(document.getElementById('petrolLtr').value) || 0;
+
+            let dieselCost = (dieselLtr * dieselRate).toFixed(2);
+            let petrolCost = (petrolLtr * petrolRate).toFixed(2);
+            let totalCost = (parseFloat(dieselCost) + parseFloat(petrolCost)).toFixed(2);
+
+            document.getElementById('dieselAmount').innerText = dieselCost;
+            document.getElementById('petrolAmount').innerText = petrolCost;
+            document.getElementById('totalAmount').innerText = totalCost;
+        }
+    </script>
+
+</body>
+</html>
