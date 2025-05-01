@@ -97,19 +97,25 @@
     </div>
 
     <script>
+        // Function to update fuel rates
         function updateRates() {
             let dieselValue = document.getElementById('dieselInput').value;
             let petrolValue = document.getElementById('petrolInput').value;
 
+            // Update rates in local storage
             if (dieselValue) {
+                localStorage.setItem('dieselRate', dieselValue);
                 document.getElementById('dieselRate').innerText = dieselValue;
             }
             if (petrolValue) {
+                localStorage.setItem('petrolRate', petrolValue);
                 document.getElementById('petrolRate').innerText = petrolValue;
             }
+
             calculateAmount(); // Update calculation after rate change
         }
 
+        // Function to calculate the fuel cost based on the current rates
         function calculateAmount() {
             let dieselRate = parseFloat(document.getElementById('dieselRate').innerText);
             let petrolRate = parseFloat(document.getElementById('petrolRate').innerText);
@@ -124,6 +130,23 @@
             document.getElementById('petrolAmount').innerText = petrolCost;
             document.getElementById('totalAmount').innerText = totalCost;
         }
+
+        // Function to initialize the fuel rates from local storage
+        function initializeRates() {
+            let storedDieselRate = localStorage.getItem('dieselRate');
+            let storedPetrolRate = localStorage.getItem('petrolRate');
+
+            // Set values if available in local storage
+            if (storedDieselRate) {
+                document.getElementById('dieselRate').innerText = storedDieselRate;
+            }
+            if (storedPetrolRate) {
+                document.getElementById('petrolRate').innerText = storedPetrolRate;
+            }
+        }
+
+        // Initialize rates on page load
+        window.onload = initializeRates;
     </script>
 
 </body>
