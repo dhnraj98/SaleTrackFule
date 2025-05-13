@@ -12,91 +12,98 @@
     body {
       margin: 0;
       padding: 0;
-      background: #f0f4f8;
-      color: #333;
+      background: #fef8f5;
+      color: #444;
     }
     .container {
       max-width: 800px;
-      margin: 40px auto;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 30px;
+      margin: 30px auto;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      padding: 25px;
     }
-    h3, h4 {
+    h3 {
       text-align: center;
+      color: #ff6f61;
       margin-top: 0;
     }
     .section {
-      margin: 20px 0;
+      margin-bottom: 25px;
     }
     .section h4 {
       margin-bottom: 10px;
-      color: #1976d2;
+      color: #ff8a65;
     }
     .inputs {
       display: flex;
       flex-wrap: wrap;
-      gap: 15px;
-      justify-content: space-between;
+      gap: 12px;
     }
     .inputs input {
       flex: 1 1 48%;
       padding: 10px;
       font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      background-color: #fff8f4;
     }
     .buttons {
       display: flex;
       gap: 10px;
       justify-content: center;
-      margin-top: 20px;
+      margin-top: 15px;
       flex-wrap: wrap;
     }
     .buttons button {
-      padding: 12px 20px;
+      padding: 10px 20px;
       font-size: 16px;
-      background: #1976d2;
+      background: #ff6f61;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s ease;
     }
     .buttons button:hover {
-      background: #0d47a1;
+      background: #e65141;
     }
     .result {
-      background: #e3f2fd;
+      background: #fff3e0;
       padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
+      border-radius: 12px;
+      margin-top: 25px;
     }
     .result h4 {
       text-align: center;
-      color: #0d47a1;
+      color: #e65100;
     }
-    #machine-results p, #total-sales {
-      font-size: 16px;
-      margin: 5px 0;
+    #machine-results p {
+      margin: 6px 0;
+      font-size: 15px;
     }
-    .nav-links {
-      margin-top: 30px;
+    #total-sales {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #d84315;
       text-align: center;
     }
+    .nav-links {
+      text-align: center;
+      margin-top: 25px;
+    }
     .nav-links a {
-      text-decoration: none;
-      margin: 10px;
-      display: inline-block;
+      margin: 5px;
       padding: 10px 20px;
-      background: #4caf50;
+      background: #81c784;
       color: white;
       border-radius: 8px;
-      transition: 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s ease;
     }
     .nav-links a:hover {
-      background: #388e3c;
+      background: #4caf50;
     }
     @media(max-width: 600px) {
       .inputs input {
@@ -108,45 +115,45 @@
 <body>
 
 <div class="container">
-  <h3>⛽ Fuel Sale Calculator</h3>
+  <h3>🧮 Cute Fuel Sale Calculator</h3>
 
   <div class="section">
     <h4>Diesel Machine A</h4>
     <div class="inputs">
-      <input type="number" id="diesel-a-old" placeholder="Old Reading (A)" step="any">
-      <input type="number" id="diesel-a-new" placeholder="New Reading (A)" step="any">
+      <input type="number" id="diesel-a-old" placeholder="Old Reading (A)">
+      <input type="number" id="diesel-a-new" placeholder="New Reading (A)">
     </div>
   </div>
 
   <div class="section">
     <h4>Diesel Machine B</h4>
     <div class="inputs">
-      <input type="number" id="diesel-b-old" placeholder="Old Reading (B)" step="any">
-      <input type="number" id="diesel-b-new" placeholder="New Reading (B)" step="any">
+      <input type="number" id="diesel-b-old" placeholder="Old Reading (B)">
+      <input type="number" id="diesel-b-new" placeholder="New Reading (B)">
     </div>
   </div>
 
   <div class="section">
     <h4>Petrol Machine A</h4>
     <div class="inputs">
-      <input type="number" id="petrol-a-old" placeholder="Old Reading (A)" step="any">
-      <input type="number" id="petrol-a-new" placeholder="New Reading (A)" step="any">
+      <input type="number" id="petrol-a-old" placeholder="Old Reading (A)">
+      <input type="number" id="petrol-a-new" placeholder="New Reading (A)">
     </div>
   </div>
 
   <div class="section">
     <h4>Petrol Machine B</h4>
     <div class="inputs">
-      <input type="number" id="petrol-b-old" placeholder="Old Reading (B)" step="any">
-      <input type="number" id="petrol-b-new" placeholder="New Reading (B)" step="any">
+      <input type="number" id="petrol-b-old" placeholder="Old Reading (B)">
+      <input type="number" id="petrol-b-new" placeholder="New Reading (B)">
     </div>
   </div>
 
   <div class="section">
-    <h4>Set Fuel Rates</h4>
+    <h4>💰 Set Rates</h4>
     <div class="inputs">
-      <input type="number" id="diesel-rate" placeholder="Diesel Rate ₹/L" step="any">
-      <input type="number" id="petrol-rate" placeholder="Petrol Rate ₹/L" step="any">
+      <input type="number" id="diesel-rate" placeholder="Diesel Rate ₹/L">
+      <input type="number" id="petrol-rate" placeholder="Petrol Rate ₹/L">
     </div>
   </div>
 
@@ -155,15 +162,15 @@
     <button onclick="calculateSales()">Calculate Sales</button>
   </div>
 
-  <div class="result" id="sales-result" style="display:none;">
-    <h4>📊 Sales Summary</h4>
+  <div class="result" id="sales-result" style="display: none;">
+    <h4>📊 Sales Report</h4>
     <div id="machine-results"></div>
     <p id="total-sales"></p>
   </div>
 
   <div class="nav-links">
-    <a href="fuleCalc.html" target="_blank">Calculator</a>
-    <a href="saleManager.html" target="_blank">Sale Manager</a>
+    <a href="fuleCalc.html" target="_blank">🔢 Calculator</a>
+    <a href="saleManager.html" target="_blank">📋 Sale Manager</a>
   </div>
 </div>
 
@@ -174,33 +181,34 @@
   function updateRates() {
     dieselRate = parseFloat(document.getElementById('diesel-rate').value) || 0;
     petrolRate = parseFloat(document.getElementById('petrol-rate').value) || 0;
-    alert(`Rates updated:\nDiesel: ₹${dieselRate}/L\nPetrol: ₹${petrolRate}/L`);
+    alert(`✅ Rates Updated:\nDiesel: ₹${dieselRate}/L\nPetrol: ₹${petrolRate}/L`);
   }
 
   function calculateSales() {
-    const daOld = parseFloat(document.getElementById('diesel-a-old').value) || 0;
-    const daNew = parseFloat(document.getElementById('diesel-a-new').value) || 0;
-    const dbOld = parseFloat(document.getElementById('diesel-b-old').value) || 0;
-    const dbNew = parseFloat(document.getElementById('diesel-b-new').value) || 0;
-    const paOld = parseFloat(document.getElementById('petrol-a-old').value) || 0;
-    const paNew = parseFloat(document.getElementById('petrol-a-new').value) || 0;
-    const pbOld = parseFloat(document.getElementById('petrol-b-old').value) || 0;
-    const pbNew = parseFloat(document.getElementById('petrol-b-new').value) || 0;
+    const machines = [
+      { name: "Diesel A", oldId: "diesel-a-old", newId: "diesel-a-new", rate: dieselRate },
+      { name: "Diesel B", oldId: "diesel-b-old", newId: "diesel-b-new", rate: dieselRate },
+      { name: "Petrol A", oldId: "petrol-a-old", newId: "petrol-a-new", rate: petrolRate },
+      { name: "Petrol B", oldId: "petrol-b-old", newId: "petrol-b-new", rate: petrolRate }
+    ];
 
-    const daSale = (daNew - daOld) * dieselRate;
-    const dbSale = (dbNew - dbOld) * dieselRate;
-    const paSale = (paNew - paOld) * petrolRate;
-    const pbSale = (pbNew - pbOld) * petrolRate;
+    let total = 0;
+    let resultHTML = "";
 
-    const total = daSale + dbSale + paSale + pbSale;
+    machines.forEach(machine => {
+      const oldVal = parseFloat(document.getElementById(machine.oldId).value);
+      const newVal = parseFloat(document.getElementById(machine.newId).value);
 
-    document.getElementById('machine-results').innerHTML = `
-      <p>Diesel A Sale: ₹${daSale.toFixed(2)}</p>
-      <p>Diesel B Sale: ₹${dbSale.toFixed(2)}</p>
-      <p>Petrol A Sale: ₹${paSale.toFixed(2)}</p>
-      <p>Petrol B Sale: ₹${pbSale.toFixed(2)}</p>
-    `;
-    document.getElementById('total-sales').textContent = `Total Sales: ₹${total.toFixed(2)}`;
+      if (!isNaN(oldVal) && !isNaN(newVal) && newVal >= oldVal) {
+        const liter = newVal - oldVal;
+        const sale = liter * machine.rate;
+        total += sale;
+        resultHTML += `<p>💡 ${machine.name}: ${liter.toFixed(2)} L = ₹${sale.toFixed(2)}</p>`;
+      }
+    });
+
+    document.getElementById('machine-results').innerHTML = resultHTML || "<p>⚠️ Please fill valid values to calculate.</p>";
+    document.getElementById('total-sales').textContent = total ? `🧾 Total Sales: ₹${total.toFixed(2)}` : "";
     document.getElementById('sales-result').style.display = 'block';
   }
 </script>
