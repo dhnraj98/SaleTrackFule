@@ -2,65 +2,208 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sale Calculator</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fuel Sale Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h3, h4 {
+      text-align: center;
+      margin-top: 0;
+    }
+    .section {
+      margin: 20px 0;
+    }
+    .section h4 {
+      margin-bottom: 10px;
+      color: #1976d2;
+    }
+    .inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-between;
+    }
+    .inputs input {
+      flex: 1 1 48%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .buttons button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .buttons button:hover {
+      background: #0d47a1;
+    }
+    .result {
+      background: #e3f2fd;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .result h4 {
+      text-align: center;
+      color: #0d47a1;
+    }
+    #machine-results p, #total-sales {
+      font-size: 16px;
+      margin: 5px 0;
+    }
+    .nav-links {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .nav-links a {
+      text-decoration: none;
+      margin: 10px;
+      display: inline-block;
+      padding: 10px 20px;
+      background: #4caf50;
+      color: white;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+    .nav-links a:hover {
+      background: #388e3c;
+    }
+    @media(max-width: 600px) {
+      .inputs input {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <div class="container" id="sale-calculator">
-    <h3 id="updated-rate-display">Sale Calculator</h3>
-    
+<div class="container">
+  <h3>⛽ Fuel Sale Calculator</h3>
+
+  <div class="section">
     <h4>Diesel Machine A</h4>
-    <input type="number" id="diesel-a-old" placeholder="Old Reading (A) in Liters" step="any" />
-    <input type="number" id="diesel-a-new" placeholder="New Reading (A) in Liters" step="any" />
+    <div class="inputs">
+      <input type="number" id="diesel-a-old" placeholder="Old Reading (A)" step="any">
+      <input type="number" id="diesel-a-new" placeholder="New Reading (A)" step="any">
+    </div>
+  </div>
 
+  <div class="section">
     <h4>Diesel Machine B</h4>
-    <input type="number" id="diesel-b-old" placeholder="Old Reading (B) in Liters" step="any" />
-    <input type="number" id="diesel-b-new" placeholder="New Reading (B) in Liters" step="any" />
+    <div class="inputs">
+      <input type="number" id="diesel-b-old" placeholder="Old Reading (B)" step="any">
+      <input type="number" id="diesel-b-new" placeholder="New Reading (B)" step="any">
+    </div>
+  </div>
 
+  <div class="section">
     <h4>Petrol Machine A</h4>
-    <input type="number" id="petrol-a-old" placeholder="Old Reading (A) in Liters" step="any" />
-    <input type="number" id="petrol-a-new" placeholder="New Reading (A) in Liters" step="any" />
+    <div class="inputs">
+      <input type="number" id="petrol-a-old" placeholder="Old Reading (A)" step="any">
+      <input type="number" id="petrol-a-new" placeholder="New Reading (A)" step="any">
+    </div>
+  </div>
 
+  <div class="section">
     <h4>Petrol Machine B</h4>
-    <input type="number" id="petrol-b-old" placeholder="Old Reading (B) in Liters" step="any" />
-    <input type="number" id="petrol-b-new" placeholder="New Reading (B) in Liters" step="any" />
+    <div class="inputs">
+      <input type="number" id="petrol-b-old" placeholder="Old Reading (B)" step="any">
+      <input type="number" id="petrol-b-new" placeholder="New Reading (B)" step="any">
+    </div>
+  </div>
 
-    <h4>Set Diesel Rate (₹/Liter)</h4>
-    <input type="number" id="diesel-rate" placeholder="Enter Diesel Rate" step="any" />
+  <div class="section">
+    <h4>Set Fuel Rates</h4>
+    <div class="inputs">
+      <input type="number" id="diesel-rate" placeholder="Diesel Rate ₹/L" step="any">
+      <input type="number" id="petrol-rate" placeholder="Petrol Rate ₹/L" step="any">
+    </div>
+  </div>
 
-    <h4>Set Petrol Rate (₹/Liter)</h4>
-    <input type="number" id="petrol-rate" placeholder="Enter Petrol Rate" step="any" />
-
+  <div class="buttons">
     <button onclick="updateRates()">Update Rate</button>
     <button onclick="calculateSales()">Calculate Sales</button>
-
-    <div class="result" id="sales-result" style="display:none;">
-      <h4>Sales Summary</h4>
-      <div id="machine-results"></div>
-      <p id="total-sales"></p>
-    </div>
-    
-      <div class="nxt-section">
-<button id="nxt-button">
-    <a href="fuleCalc.html" target="_blink" style="text-decoration:none;">
-      Calculator 
-    </a>
-    </button>
-
-  </div>
-    <div class="nxt-section">
-<button id="nxt-button">
-    <a href="saleManager.html" style="text-decoration:none;" target="_blink">
-      Sale Manager 
-    </a>
-    </button>
-
-    </div>
   </div>
 
-  <script src="script.js"></script>
+  <div class="result" id="sales-result" style="display:none;">
+    <h4>📊 Sales Summary</h4>
+    <div id="machine-results"></div>
+    <p id="total-sales"></p>
+  </div>
+
+  <div class="nav-links">
+    <a href="fuleCalc.html" target="_blank">Calculator</a>
+    <a href="saleManager.html" target="_blank">Sale Manager</a>
+  </div>
+</div>
+
+<script>
+  let dieselRate = 0;
+  let petrolRate = 0;
+
+  function updateRates() {
+    dieselRate = parseFloat(document.getElementById('diesel-rate').value) || 0;
+    petrolRate = parseFloat(document.getElementById('petrol-rate').value) || 0;
+    alert(`Rates updated:\nDiesel: ₹${dieselRate}/L\nPetrol: ₹${petrolRate}/L`);
+  }
+
+  function calculateSales() {
+    const daOld = parseFloat(document.getElementById('diesel-a-old').value) || 0;
+    const daNew = parseFloat(document.getElementById('diesel-a-new').value) || 0;
+    const dbOld = parseFloat(document.getElementById('diesel-b-old').value) || 0;
+    const dbNew = parseFloat(document.getElementById('diesel-b-new').value) || 0;
+    const paOld = parseFloat(document.getElementById('petrol-a-old').value) || 0;
+    const paNew = parseFloat(document.getElementById('petrol-a-new').value) || 0;
+    const pbOld = parseFloat(document.getElementById('petrol-b-old').value) || 0;
+    const pbNew = parseFloat(document.getElementById('petrol-b-new').value) || 0;
+
+    const daSale = (daNew - daOld) * dieselRate;
+    const dbSale = (dbNew - dbOld) * dieselRate;
+    const paSale = (paNew - paOld) * petrolRate;
+    const pbSale = (pbNew - pbOld) * petrolRate;
+
+    const total = daSale + dbSale + paSale + pbSale;
+
+    document.getElementById('machine-results').innerHTML = `
+      <p>Diesel A Sale: ₹${daSale.toFixed(2)}</p>
+      <p>Diesel B Sale: ₹${dbSale.toFixed(2)}</p>
+      <p>Petrol A Sale: ₹${paSale.toFixed(2)}</p>
+      <p>Petrol B Sale: ₹${pbSale.toFixed(2)}</p>
+    `;
+    document.getElementById('total-sales').textContent = `Total Sales: ₹${total.toFixed(2)}`;
+    document.getElementById('sales-result').style.display = 'block';
+  }
+</script>
 
 </body>
 </html>
