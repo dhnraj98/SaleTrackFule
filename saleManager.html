@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fuel Sale Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#3f51b5" />
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -12,13 +15,12 @@
       color: #333;
     }
     .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
+      max-width: 100%;
+      padding: 1rem;
       background: #fff;
       border-radius: 16px;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
-      margin-top: 30px;
+      margin: 20px auto;
     }
     h2 {
       text-align: center;
@@ -32,7 +34,7 @@
     }
     input, select {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       margin-bottom: 15px;
@@ -42,22 +44,20 @@
     button {
       background-color: #3f51b5;
       color: white;
-      padding: 10px 16px;
+      padding: 12px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 600;
-      transition: 0.3s;
+      width: 100%;
     }
     button:hover {
       background-color: #303f9f;
     }
     .fuel-inputs {
       display: flex;
+      flex-direction: column;
       gap: 10px;
-    }
-    .fuel-inputs > div {
-      flex: 1;
     }
     .totals {
       margin-top: 20px;
@@ -66,42 +66,21 @@
       padding: 10px;
       border-radius: 10px;
       border: 1px solid #ddd;
-      line-height: 1.6;
-    }
-    .table-container {
-      margin-top: 20px;
-      max-height: 300px;
-      overflow-y: auto;
-      border-radius: 10px;
-      border: 1px solid #ddd;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
     thead {
       background-color: #e8eaf6;
       position: sticky;
       top: 0;
-      z-index: 1;
     }
     th, td {
-      padding: 10px;
+      padding: 8px;
       border-bottom: 1px solid #eee;
       text-align: left;
-      vertical-align: top;
-    }
-    td .action-btn {
-      display: inline-block;
-      margin: 2px;
-      padding: 6px 12px;
-      border-radius: 6px;
-      color: white;
-      font-weight: bold;
-      font-size: 0.85rem;
-      cursor: pointer;
-      user-select: none;
     }
     .edit-btn {
       background-color: #2196f3;
@@ -109,47 +88,47 @@
     .delete-btn {
       background-color: #f44336;
     }
-    #customerNameDiv {
-      display: none;
-    }
-    #partialPaymentLabel, #partialPayment {
-      display: none;
+    .action-btn {
+      padding: 6px 10px;
+      color: white;
+      border-radius: 5px;
+      margin-right: 5px;
+      font-size: 0.85rem;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Fuel Sale Tracker</h2>
-    
-    <label for="petrolRate">Petrol Rate (Rs/L)</label>
-    <input type="number" id="petrolRate" placeholder="Enter Petrol Rate" min="0" step="0.01">
 
-    <label for="dieselRate">Diesel Rate (Rs/L)</label>
-    <input type="number" id="dieselRate" placeholder="Enter Diesel Rate" min="0" step="0.01">
+    <label>Petrol Rate (Rs/L)</label>
+    <input type="number" id="petrolRate">
+
+    <label>Diesel Rate (Rs/L)</label>
+    <input type="number" id="dieselRate">
 
     <div class="fuel-inputs">
       <div>
-        <label for="petrolLiters">Petrol (Liters)</label>
-        <input type="number" id="petrolLiters" placeholder="Petrol liters" min="0" step="0.01">
+        <label>Petrol (Liters)</label>
+        <input type="number" id="petrolLiters">
       </div>
       <div>
-        <label for="dieselLiters">Diesel (Liters)</label>
-        <input type="number" id="dieselLiters" placeholder="Diesel liters" min="0" step="0.01">
+        <label>Diesel (Liters)</label>
+        <input type="number" id="dieselLiters">
       </div>
     </div>
 
-    <label for="paymentType">Payment Type</label>
-    <select id="paymentType" onchange="toggleCustomerName()">
+    <label>Payment Type</label>
+    <select id="paymentType" onchange="toggleCustomerFields()">
       <option value="Cash">Cash</option>
       <option value="Credit">Credit</option>
     </select>
 
-    <div id="customerNameDiv">
-      <label for="customerName">Customer Name (for Credit)</label>
-      <input type="text" id="customerName" placeholder="Enter customer name">
-
-      <label for="partialPayment" id="partialPaymentLabel">Partial Payment Amount (Rs)</label>
-      <input type="number" id="partialPayment" placeholder="Enter partial payment amount" min="0" step="0.01"/>
+    <div id="creditFields" style="display:none">
+      <label>Customer Name</label>
+      <input type="text" id="customerName">
+      <label>Partial Payment</label>
+      <input type="number" id="partialPayment">
     </div>
 
     <button onclick="addTransaction()" id="submitBtn">Add Transaction</button>
@@ -159,94 +138,55 @@
       <strong>Total Credit:</strong> Rs <span id="totalCredit">0</span>
     </div>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Fuel Details</th>
-            <th>Payment</th>
-            <th>Total</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="transactionTable"></tbody>
-      </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Fuel</th>
+          <th>Payment</th>
+          <th>Total</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="transactionTable"></tbody>
+    </table>
   </div>
 
   <script>
     let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    let petrolRate = parseFloat(localStorage.getItem("petrolRate")) || 0;
-    let dieselRate = parseFloat(localStorage.getItem("dieselRate")) || 0;
     let editingIndex = -1;
 
-    document.getElementById("petrolRate").value = petrolRate;
-    document.getElementById("dieselRate").value = dieselRate;
-
-    function toggleCustomerName() {
-      const paymentType = document.getElementById("paymentType").value;
-      const customerDiv = document.getElementById("customerNameDiv");
-      const customerInput = document.getElementById("customerName");
-      const partialPaymentInput = document.getElementById("partialPayment");
-      const partialPaymentLabel = document.getElementById("partialPaymentLabel");
-
-      if (paymentType === "Credit") {
-        customerDiv.style.display = "block";
-        customerInput.style.display = "block";
-        partialPaymentInput.style.display = "block";
-        partialPaymentLabel.style.display = "block";
-      } else {
-        customerDiv.style.display = "none";
-        customerInput.style.display = "none";
-        partialPaymentInput.style.display = "none";
-        partialPaymentLabel.style.display = "none";
-        partialPaymentInput.value = '';
-      }
+    function toggleCustomerFields() {
+      const type = document.getElementById("paymentType").value;
+      document.getElementById("creditFields").style.display = type === "Credit" ? "block" : "none";
     }
 
     function addTransaction() {
-      petrolRate = parseFloat(document.getElementById("petrolRate").value) || 0;
-      dieselRate = parseFloat(document.getElementById("dieselRate").value) || 0;
-      localStorage.setItem("petrolRate", petrolRate);
-      localStorage.setItem("dieselRate", dieselRate);
-
+      const petrolRate = parseFloat(document.getElementById("petrolRate").value) || 0;
+      const dieselRate = parseFloat(document.getElementById("dieselRate").value) || 0;
       const petrolLiters = parseFloat(document.getElementById("petrolLiters").value) || 0;
       const dieselLiters = parseFloat(document.getElementById("dieselLiters").value) || 0;
       const paymentType = document.getElementById("paymentType").value;
       const customerName = document.getElementById("customerName").value.trim();
       const partialPayment = parseFloat(document.getElementById("partialPayment").value) || 0;
 
-      if (petrolLiters === 0 && dieselLiters === 0) {
-        alert("Please enter at least one fuel quantity.");
-        return;
-      }
-
       if (paymentType === "Credit" && customerName === "") {
-        alert("Please enter customer name for credit.");
+        alert("Customer name required for credit");
         return;
       }
 
-      const petrolAmount = petrolLiters * petrolRate;
-      const dieselAmount = dieselLiters * dieselRate;
-      const total = petrolAmount + dieselAmount;
-
-      if (paymentType === "Credit" && partialPayment > total) {
-        alert("Partial payment cannot exceed total amount.");
-        return;
-      }
+      const total = (petrolLiters * petrolRate) + (dieselLiters * dieselRate);
+      const creditAmount = paymentType === "Credit" ? total - partialPayment : 0;
 
       const transaction = {
         petrolLiters,
         dieselLiters,
         petrolRate,
         dieselRate,
-        petrolAmount,
-        dieselAmount,
         total,
         paymentType,
-        customerName: paymentType === "Credit" ? customerName : "",
-        partialPayment: paymentType === "Credit" ? partialPayment : 0,
-        netTotal: paymentType === "Credit" ? total - partialPayment : total
+        customerName,
+        partialPayment,
+        creditAmount
       };
 
       if (editingIndex > -1) {
@@ -264,29 +204,29 @@
 
     function renderTable() {
       const tbody = document.getElementById("transactionTable");
-      tbody.innerHTML = '';
-      let totalCash = 0;
-      let totalCredit = 0;
+      tbody.innerHTML = "";
+      let totalCash = 0, totalCredit = 0;
 
-      transactions.forEach((tx, index) => {
-        const details = [];
-        if (tx.petrolLiters > 0) details.push(`Petrol: ${tx.petrolLiters}L @ Rs${tx.petrolRate.toFixed(2)}`);
-        if (tx.dieselLiters > 0) details.push(`Diesel: ${tx.dieselLiters}L @ Rs${tx.dieselRate.toFixed(2)}`);
-        const detailText = details.join('<br>');
-        const payText = tx.paymentType === "Credit" ? 
-          `Credit (${tx.customerName})<br>Partial Paid: Rs ${tx.partialPayment.toFixed(2)}` : "Cash";
+      transactions.forEach((tx, i) => {
+        const fuel = [];
+        if (tx.petrolLiters) fuel.push(`Petrol: ${tx.petrolLiters}L @ Rs${tx.petrolRate}`);
+        if (tx.dieselLiters) fuel.push(`Diesel: ${tx.dieselLiters}L @ Rs${tx.dieselRate}`);
 
-        if (tx.paymentType === 'Cash') totalCash += tx.total;
-        else totalCredit += tx.netTotal;
+        const payText = tx.paymentType === "Credit"
+          ? `Credit (${tx.customerName})<br>Paid: Rs${tx.partialPayment}<br>Due: Rs${tx.creditAmount}`
+          : "Cash";
+
+        if (tx.paymentType === "Cash") totalCash += tx.total;
+        else totalCredit += tx.creditAmount;
 
         tbody.innerHTML += `
           <tr>
-            <td>${detailText}</td>
+            <td>${fuel.join("<br>")}</td>
             <td>${payText}</td>
-            <td>Rs ${tx.paymentType === "Credit" ? tx.netTotal.toFixed(2) : tx.total.toFixed(2)}</td>
+            <td>Rs ${tx.total.toFixed(2)}</td>
             <td>
-              <span class="action-btn edit-btn" onclick="editTransaction(${index})">Edit</span>
-              <span class="action-btn delete-btn" onclick="deleteTransaction(${index})">Delete</span>
+              <span class="action-btn edit-btn" onclick="editTransaction(${i})">Edit</span>
+              <span class="action-btn delete-btn" onclick="deleteTransaction(${i})">Delete</span>
             </td>
           </tr>
         `;
@@ -296,38 +236,44 @@
       document.getElementById("totalCredit").innerText = totalCredit.toFixed(2);
     }
 
-    function deleteTransaction(index) {
-      if(confirm("Are you sure you want to delete this transaction?")) {
-        transactions.splice(index, 1);
-        localStorage.setItem("transactions", JSON.stringify(transactions));
-        renderTable();
-      }
-    }
-
     function editTransaction(index) {
       const tx = transactions[index];
       document.getElementById("petrolLiters").value = tx.petrolLiters;
       document.getElementById("dieselLiters").value = tx.dieselLiters;
+      document.getElementById("petrolRate").value = tx.petrolRate;
+      document.getElementById("dieselRate").value = tx.dieselRate;
       document.getElementById("paymentType").value = tx.paymentType;
-      toggleCustomerName();
-      document.getElementById("customerName").value = tx.customerName || "";
-      document.getElementById("partialPayment").value = tx.partialPayment || 0;
+      toggleCustomerFields();
+      document.getElementById("customerName").value = tx.customerName;
+      document.getElementById("partialPayment").value = tx.partialPayment;
       editingIndex = index;
-      document.getElementById("submitBtn").innerText = "Update Transaction";
+      document.getElementById("submitBtn").innerText = "Update";
+    }
+
+    function deleteTransaction(index) {
+      transactions.splice(index, 1);
+      localStorage.setItem("transactions", JSON.stringify(transactions));
+      renderTable();
     }
 
     function clearForm() {
       document.getElementById("petrolLiters").value = '';
       document.getElementById("dieselLiters").value = '';
-      document.getElementById("paymentType").value = 'Cash';
-      document.getElementById("customerName").value = '';
       document.getElementById("partialPayment").value = '';
-      toggleCustomerName();
+      document.getElementById("customerName").value = '';
+      document.getElementById("paymentType").value = 'Cash';
+      toggleCustomerFields();
     }
 
-    // Initialize form and table on page load
-    toggleCustomerName();
+    toggleCustomerFields();
     renderTable();
+
+    // Service worker for Add to Home Screen
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => {
+        console.log("Service Worker Registered");
+      });
+    }
   </script>
 </body>
 </html>
