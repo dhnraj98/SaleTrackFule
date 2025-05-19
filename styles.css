@@ -1,1 +1,121 @@
 
+/* Reset & Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+body {
+  background-color: #f4f6f8;
+  color: #333;
+  padding: 20px;
+}
+
+/* Container */
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* Headings */
+h2, h3, h4 {
+  color: #2e7d32;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Section spacing */
+.section {
+  margin-bottom: 30px;
+}
+
+/* Inputs */
+.inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.inputs input {
+  flex: 1 1 45%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Buttons */
+.buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+button {
+  background-color: #388e3c;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin: 5px;
+}
+button:hover {
+  background-color: #2e7d32;
+}
+
+/* Results Section */
+.result {
+  background-color: #e8f5e9;
+  padding: 20px;
+  border-radius: 12px;
+}
+.result h4 {
+  color: #1b5e20;
+  margin-bottom: 10px;
+}
+.result p {
+  margin: 6px 0;
+}
+
+/* Total */
+#total-sales {
+  font-weight: bold;
+  text-align: center;
+  color: #d84315;
+  margin-top: 15px;
+}
+
+/* Navigation links */
+.nav-links {
+  text-align: center;
+  margin-top: 30px;
+}
+.nav-links a {
+  display: inline-block;
+  margin: 8px;
+  padding: 10px 20px;
+  background-color: #1976d2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+.nav-links a:hover {
+  background-color: #1565c0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .inputs input {
+    flex: 1 1 100%;
+  }
+  button {
+    width: 100%;
+  }
+}
