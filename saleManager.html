@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fuel Sale Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fuel Sale Tracker with Partial Payment</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -12,7 +12,7 @@
       color: #333;
     }
     .container {
-      max-width: 900px;
+      max-width: 950px;
       margin: auto;
       padding: 2rem;
       background: #fff;
@@ -51,20 +51,21 @@
     button:hover {
       background-color: #303f9f;
     }
-    .fuel-inputs {
+    .flex-row {
       display: flex;
       gap: 10px;
+      flex-wrap: wrap;
     }
-    .fuel-inputs > div {
+    .flex-row > div {
       flex: 1;
+      min-width: 250px;
     }
-    .totals {
-      margin-top: 20px;
-      font-size: 1.1rem;
-      background: #f7f9fc;
-      padding: 10px;
-      border-radius: 10px;
+    .section {
       border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 25px;
+      background: #f7f9fc;
     }
     .table-container {
       margin-top: 20px;
@@ -72,6 +73,7 @@
       overflow-y: auto;
       border-radius: 10px;
       border: 1px solid #ddd;
+      background: white;
     }
     table {
       width: 100%;
@@ -82,12 +84,12 @@
       background-color: #e8eaf6;
       position: sticky;
       top: 0;
+      z-index: 2;
     }
     th, td {
       padding: 10px;
       border-bottom: 1px solid #eee;
       text-align: left;
-      vertical-align: top;
     }
     td .action-btn {
       display: inline-block;
@@ -105,89 +107,151 @@
     .delete-btn {
       background-color: #f44336;
     }
-    #customerNameDiv {
+    #customerName {
       display: none;
+    }
+    .summary {
+      font-weight: 600;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Fuel Sale Tracker</h2>
+    <h2>Fuel Sale Tracker with Partial Payments</h2>
 
-    <label>Petrol Rate (Rs/L)</label>
-    <input type="number" id="petrolRate" placeholder="Enter Petrol Rate">
+    <!-- Fuel Sale Entry -->
+    <div class="section">
+      <h3>Add Fuel Sale</h3>
+      <label>Petrol Rate (Rs/L)</label>
+      <input type="number" id="petrolRate" placeholder="Enter Petrol Rate" />
 
-    <label>Diesel Rate (Rs/L)</label>
-    <input type="number" id="dieselRate" placeholder="Enter Diesel Rate">
+      <label>Diesel Rate (Rs/L)</label>
+      <input type="number" id="dieselRate" placeholder="Enter Diesel Rate" />
 
-    <div class="fuel-inputs">
-      <div>
-        <label>Petrol (Liters)</label>
-        <input type="number" id="petrolLiters" placeholder="Petrol liters">
+      <div class="flex-row">
+        <div>
+          <label>Petrol (Liters)</label>
+          <input type="number" id="petrolLiters" placeholder="Petrol liters" />
+        </div>
+        <div>
+          <label>Diesel (Liters)</label>
+          <input type="number" id="dieselLiters" placeholder="Diesel liters" />
+        </div>
       </div>
-      <div>
-        <label>Diesel (Liters)</label>
-        <input type="number" id="dieselLiters" placeholder="Diesel liters">
+
+      <label>Payment Type</label>
+      <select id="paymentType" onchange="toggleCustomerName()">
+        <option value="Cash">Cash</option>
+        <option value="Credit">Credit</option>
+      </select>
+
+      <div id="customerNameDiv">
+        <label for="customerName">Customer Name (for Credit)</label>
+        <input type="text" id="customerName" placeholder="Enter customer name" />
+      </div>
+
+      <button onclick="addTransaction()" id="submitBtn">Add Transaction</button>
+    </div>
+
+    <!-- Partial Payment Entry -->
+    <div class="section">
+      <h3>Add Partial Payment (Credit Payment)</h3>
+      <label for="partialCustomerName">Customer Name</label>
+      <input type="text" id="partialCustomerName" placeholder="Enter customer name" />
+
+      <label for="partialAmount">Payment Amount (Rs)</label>
+      <input type="number" id="partialAmount" placeholder="Enter partial payment amount" />
+
+      <button onclick="addPartialPayment()" id="submitPartialBtn">Add Partial Payment</button>
+    </div>
+
+    <!-- Summary -->
+    <div class="section summary">
+      <strong>Total Cash:</strong> Rs <span id="totalCash">0</span><br />
+      <strong>Total Credit Sales:</strong> Rs <span id="totalCredit">0</span><br />
+      <strong>Total Partial Payments:</strong> Rs <span id="totalPartial">0</span><br />
+      <strong>Net Credit Balance (Credit Sales - Partial Payments):</strong> Rs <span id="netCreditBalance">0</span>
+    </div>
+
+    <!-- Credit Balances Per Customer -->
+    <div class="section">
+      <h3>Credit Balance Per Customer</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Total Credit Sales</th>
+              <th>Total Partial Payments</th>
+              <th>Outstanding Balance</th>
+            </tr>
+          </thead>
+          <tbody id="creditBalanceTable"></tbody>
+        </table>
       </div>
     </div>
 
-    <label>Payment Type</label>
-    <select id="paymentType" onchange="toggleCustomerName()">
-      <option value="Cash">Cash</option>
-      <option value="Credit">Credit</option>
-    </select>
-
-    <div id="customerNameDiv">
-      <label for="customerName">Customer Name (for Credit)</label>
-      <input type="text" id="customerName" placeholder="Enter customer name">
+    <!-- Transactions Table -->
+    <div class="section">
+      <h3>Fuel Transactions</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Fuel Details</th>
+              <th>Payment</th>
+              <th>Total (Rs)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transactionTable"></tbody>
+        </table>
+      </div>
     </div>
 
-    <button onclick="addTransaction()" id="submitBtn">Add Transaction</button>
-
-    <div class="totals">
-      <strong>Total Cash:</strong> Rs <span id="totalCash">0</span><br>
-      <strong>Total Credit:</strong> Rs <span id="totalCredit">0</span>
-    </div>
-
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Fuel Details</th>
-            <th>Payment</th>
-            <th>Total</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="transactionTable"></tbody>
-      </table>
+    <!-- Partial Payments Table -->
+    <div class="section">
+      <h3>Partial Payments</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Amount (Rs)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="partialPaymentsTable"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <script>
+    // Initialize data from localStorage or empty arrays
     let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-    let petrolRate = localStorage.getItem("petrolRate") || 0;
-    let dieselRate = localStorage.getItem("dieselRate") || 0;
+    let partialPayments = JSON.parse(localStorage.getItem("partialPayments")) || [];
+    let petrolRate = parseFloat(localStorage.getItem("petrolRate")) || 0;
+    let dieselRate = parseFloat(localStorage.getItem("dieselRate")) || 0;
     let editingIndex = -1;
+    let editingPartialIndex = -1;
 
+    // Set rate inputs
     document.getElementById("petrolRate").value = petrolRate;
     document.getElementById("dieselRate").value = dieselRate;
 
+    // Show/hide customer input on payment type
     function toggleCustomerName() {
       const paymentType = document.getElementById("paymentType").value;
-      document.getElementById("customerNameDiv").style.display = paymentType === "Credit" ? "block" : "none";
+      const customerInput = document.getElementById("customerName");
+      customerInput.style.display = paymentType === "Credit" ? "block" : "none";
     }
 
+    // Add or update fuel transaction
     function addTransaction() {
       petrolRate = parseFloat(document.getElementById("petrolRate").value) || 0;
       dieselRate = parseFloat(document.getElementById("dieselRate").value) || 0;
-
-      if (petrolRate <= 0 || dieselRate <= 0) {
-        alert("Please enter valid fuel rates.");
-        return;
-      }
-
       localStorage.setItem("petrolRate", petrolRate);
       localStorage.setItem("dieselRate", dieselRate);
 
@@ -200,7 +264,6 @@
         alert("Please enter at least one fuel quantity.");
         return;
       }
-
       if (paymentType === "Credit" && customerName === "") {
         alert("Please enter customer name for credit.");
         return;
@@ -209,9 +272,6 @@
       const petrolAmount = petrolLiters * petrolRate;
       const dieselAmount = dieselLiters * dieselRate;
       const total = petrolAmount + dieselAmount;
-
-      const today = new Date();
-      const date = today.toLocaleDateString();
 
       const transaction = {
         petrolLiters,
@@ -222,8 +282,7 @@
         dieselAmount,
         total,
         paymentType,
-        customerName: paymentType === "Credit" ? customerName : "",
-        date
+        customerName: paymentType === "Credit" ? customerName : ""
       };
 
       if (editingIndex > -1) {
@@ -235,29 +294,64 @@
       }
 
       localStorage.setItem("transactions", JSON.stringify(transactions));
-      renderTable();
-      clearForm();
+      renderAll();
+      clearFuelForm();
     }
 
-    function renderTable() {
-      const tbody = document.getElementById("transactionTable");
-      tbody.innerHTML = '';
-      let totalCash = 0;
-      let totalCredit = 0;
+    // Add or update partial payment
+    function addPartialPayment() {
+      const customerName = document.getElementById("partialCustomerName").value.trim();
+      const amount = parseFloat(document.getElementById("partialAmount").value);
 
+      if (customerName === "") {
+        alert("Please enter customer name for partial payment.");
+        return;
+      }
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid partial payment amount.");
+        return;
+      }
+
+      const payment = {
+        customerName,
+        amount
+      };
+
+      if (editingPartialIndex > -1) {
+        partialPayments[editingPartialIndex] = payment;
+        editingPartialIndex = -1;
+        document.getElementById("submitPartialBtn").innerText = "Add Partial Payment";
+      } else {
+        partialPayments.push(payment);
+      }
+
+      localStorage.setItem("partialPayments", JSON.stringify(partialPayments));
+      renderAll();
+      clearPartialForm();
+    }
+
+    // Render all UI parts
+    function renderAll() {
+      renderTransactions();
+      renderPartialPayments();
+      renderSummary();
+      renderCreditBalances();
+    }
+
+    // Render fuel transactions table
+    function renderTransactions() {
+      const tbody = document.getElementById("transactionTable");
+      tbody.innerHTML = "";
       transactions.forEach((tx, index) => {
         const details = [];
         if (tx.petrolLiters > 0) details.push(`Petrol: ${tx.petrolLiters}L @ Rs${tx.petrolRate}`);
         if (tx.dieselLiters > 0) details.push(`Diesel: ${tx.dieselLiters}L @ Rs${tx.dieselRate}`);
+        const detailText = details.join("<br>");
         const payText = tx.paymentType === "Credit" ? `Credit (${tx.customerName})` : "Cash";
-
-        if (tx.paymentType === 'Cash') totalCash += tx.total;
-        else totalCredit += tx.total;
 
         tbody.innerHTML += `
           <tr>
-            <td>${tx.date}</td>
-            <td>${details.join('<br>')}</td>
+            <td>${detailText}</td>
             <td>${payText}</td>
             <td>Rs ${tx.total.toFixed(2)}</td>
             <td>
@@ -267,19 +361,96 @@
           </tr>
         `;
       });
+    }
+
+    // Render partial payments table
+    function renderPartialPayments() {
+      const tbody = document.getElementById("partialPaymentsTable");
+      tbody.innerHTML = "";
+      partialPayments.forEach((pmt, index) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${pmt.customerName}</td>
+            <td>Rs ${pmt.amount.toFixed(2)}</td>
+            <td>
+              <span class="action-btn edit-btn" onclick="editPartialPayment(${index})">Edit</span>
+              <span class="action-btn delete-btn" onclick="deletePartialPayment(${index})">Delete</span>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Render summary totals
+    function renderSummary() {
+      let totalCash = 0;
+      let totalCredit = 0;
+      let totalPartial = 0;
+
+      transactions.forEach(tx => {
+        if (tx.paymentType === "Cash") totalCash += tx.total;
+        else if (tx.paymentType === "Credit") totalCredit += tx.total;
+      });
+
+      partialPayments.forEach(pmt => {
+        totalPartial += pmt.amount;
+      });
+
+      const netCreditBalance = totalCredit - totalPartial;
 
       document.getElementById("totalCash").innerText = totalCash.toFixed(2);
       document.getElementById("totalCredit").innerText = totalCredit.toFixed(2);
+      document.getElementById("totalPartial").innerText = totalPartial.toFixed(2);
+      document.getElementById("netCreditBalance").innerText = netCreditBalance.toFixed(2);
     }
 
-    function deleteTransaction(index) {
-      if (confirm("Are you sure you want to delete this transaction?")) {
-        transactions.splice(index, 1);
-        localStorage.setItem("transactions", JSON.stringify(transactions));
-        renderTable();
-      }
+    // Render credit balance per customer
+    function renderCreditBalances() {
+      // Calculate credit sales and partial payments per customer
+      const creditSalesMap = {};
+      const partialPaymentsMap = {};
+
+      transactions.forEach(tx => {
+        if (tx.paymentType === "Credit") {
+          const c = tx.customerName.toLowerCase();
+          creditSalesMap[c] = (creditSalesMap[c] || 0) + tx.total;
+        }
+      });
+
+      partialPayments.forEach(pmt => {
+        const c = pmt.customerName.toLowerCase();
+        partialPaymentsMap[c] = (partialPaymentsMap[c] || 0) + pmt.amount;
+      });
+
+      // Get all customers
+      const allCustomers = new Set([
+        ...Object.keys(creditSalesMap),
+        ...Object.keys(partialPaymentsMap)
+      ]);
+
+      const tbody = document.getElementById("creditBalanceTable");
+      tbody.innerHTML = "";
+
+      allCustomers.forEach(cust => {
+        const creditTotal = creditSalesMap[cust] || 0;
+        const partialTotal = partialPaymentsMap[cust] || 0;
+        const balance = creditTotal - partialTotal;
+
+        // Capitalize customer name display
+        const displayName = cust.charAt(0).toUpperCase() + cust.slice(1);
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${displayName}</td>
+            <td>Rs ${creditTotal.toFixed(2)}</td>
+            <td>Rs ${partialTotal.toFixed(2)}</td>
+            <td>Rs ${balance.toFixed(2)}</td>
+          </tr>
+        `;
+      });
     }
 
+    // Edit fuel transaction
     function editTransaction(index) {
       const tx = transactions[index];
       document.getElementById("petrolLiters").value = tx.petrolLiters;
@@ -291,16 +462,55 @@
       document.getElementById("submitBtn").innerText = "Update Transaction";
     }
 
-    function clearForm() {
-      document.getElementById("petrolLiters").value = '';
-      document.getElementById("dieselLiters").value = '';
-      document.getElementById("paymentType").value = 'Cash';
-      document.getElementById("customerName").value = '';
-      toggleCustomerName();
+    // Delete fuel transaction
+    function deleteTransaction(index) {
+      if (confirm("Are you sure you want to delete this transaction?")) {
+        transactions.splice(index, 1);
+        localStorage.setItem("transactions", JSON.stringify(transactions));
+        renderAll();
+      }
     }
 
+    // Edit partial payment
+    function editPartialPayment(index) {
+      const pmt = partialPayments[index];
+      document.getElementById("partialCustomerName").value = pmt.customerName;
+      document.getElementById("partialAmount").value = pmt.amount;
+      editingPartialIndex = index;
+      document.getElementById("submitPartialBtn").innerText = "Update Partial Payment";
+    }
+
+    // Delete partial payment
+    function deletePartialPayment(index) {
+      if (confirm("Are you sure you want to delete this partial payment?")) {
+        partialPayments.splice(index, 1);
+        localStorage.setItem("partialPayments", JSON.stringify(partialPayments));
+        renderAll();
+      }
+    }
+
+    // Clear fuel sale form
+    function clearFuelForm() {
+      document.getElementById("petrolLiters").value = "";
+      document.getElementById("dieselLiters").value = "";
+      document.getElementById("paymentType").value = "Cash";
+      document.getElementById("customerName").value = "";
+      toggleCustomerName();
+      editingIndex = -1;
+      document.getElementById("submitBtn").innerText = "Add Transaction";
+    }
+
+    // Clear partial payment form
+    function clearPartialForm() {
+      document.getElementById("partialCustomerName").value = "";
+      document.getElementById("partialAmount").value = "";
+      editingPartialIndex = -1;
+      document.getElementById("submitPartialBtn").innerText = "Add Partial Payment";
+    }
+
+    // Initial render
     toggleCustomerName();
-    renderTable();
+    renderAll();
   </script>
 </body>
 </html>
