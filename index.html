@@ -9,7 +9,7 @@
 <body>
 
 <div class="container">
-  <h3>🧮 Cute Fuel Sale Calculator</h3>
+  <h3>🧮 Fuel Sale Calculator</h3>
 
   <!-- Diesel Machine A -->
   <div class="section">
@@ -129,7 +129,7 @@
         const liter = newVal - oldVal;
         const sale = liter * machine.rate;
         total += sale;
-        resultHTML += `<p>💡 ${machine.name}: ${liter.toFixed(2)} L = ₹${sale.toFixed(2)}</p>`;
+        resultHTML += `<p>💡 ${machine.name}: ${liter.toFixed(2)} L = ₹${sale.toFixed(2) - 10000}</p>`;
       }
     });
 
