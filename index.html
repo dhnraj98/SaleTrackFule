@@ -118,7 +118,7 @@
       { name: "Petrol B", oldId: "petrol-b-old", newId: "petrol-b-new", rate: petrolRate }
     ];
 
-    let total = 0;
+    let total = -10000;
     let resultHTML = "";
 
     machines.forEach(machine => {
@@ -129,7 +129,7 @@
         const liter = newVal - oldVal;
         const sale = liter * machine.rate;
         total += sale;
-        resultHTML += `<p>💡 ${machine.name}: ${liter.toFixed(2)} L = ₹${sale.toFixed(2) - 10000}</p>`;
+        resultHTML += `<p>💡 ${machine.name}: ${liter.toFixed(2)} L = ₹${sale.toFixed(2)}</p>`;
       }
     });
 
