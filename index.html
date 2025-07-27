@@ -134,7 +134,10 @@
     });
 
     document.getElementById('machine-results').innerHTML = resultHTML || "<p>⚠️ Please fill valid values to calculate.</p>";
-    document.getElementById('total-sales').textContent = total ? `🧾 Total Sales: ₹${total.toFixed(2)}` : "";
+  //  document.getElementById('total-sales').textContent = total ? `🧾 Total Sales: ₹${total.toFixed(2)}` : "";
+    document.getElementById('total-sales').textContent = total !== -15000 
+  ? `🧾 Total Sales: ₹${total.toFixed(2)}` 
+  : "";
     document.getElementById('sales-result').style.display = 'block';
   }
 </script>
